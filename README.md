@@ -6,13 +6,17 @@ A Docker image for backing up a Postgres database to an S3 bucket.
 
 The image expects the following environment varialbes:
 
-| Variable       | Description                                                                                                                                                                                           |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| BUCKET_NAME    | S3 bucket name                                                                                                                                                                                        |
-| BUCKET_REGION  | S3 bucket region                                                                                                                                                                                      |
-| S3_PREFIX      | S3 bucket prefix for storing the backups. Each backup object is stored in an object named by the current time under the prefix. For example: `s3://${PREFIX}/2022-11-24T11:40:31+00:00.pgdump.bz2.nc` |
-| ENCRYPTION_KEY | Key used to encrypt the backup using `mcrypt`.                                                                                                                                                        |
-
+| Variable         | Description                                                                                                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BUCKET_NAME`    | S3 bucket name                                                                                                                                                                                        |
+| `BUCKET_REGION`  | S3 bucket region                                                                                                                                                                                      |
+| `S3_PREFIX`      | S3 bucket prefix for storing the backups. Each backup object is stored in an object named by the current time under the prefix. For example: `s3://${PREFIX}/2022-11-24T11:40:31+00:00.pgdump.bz2.nc` |
+| `ENCRYPTION_KEY` | Key used to encrypt the backup using `mcrypt`.                                                                                                                                                        |
+| `PGHOST`         | Database hostname                                                                                                                                                                                     |
+| `PGPORT`         | Database port                                                                                                                                                                                         |
+| `PGUSER`         | Database user                                                                                                                                                                                         |
+| `PGPASSWORD`     | Database password                                                                                                                                                                                     |
+| `PGDATABASE`     | Database name                                                                                                                                                                                         |
 
 ## Image Tags
 
@@ -81,6 +85,13 @@ spec:
                   value: {{ .Values.dbBackup.config.bucketName }}
                 - name: BUCKET_REGION
                   value: {{ .Values.dbBackup.config.bucketRegion }}
+                - name: S3_PREFIX
+                  value: Backups
+                - name: ENCRYPTION_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: ""  # TODO
+                      key: ""  #TODO
               volumeMounts:
                 - name: homedir
                   mountPath: /home/user
