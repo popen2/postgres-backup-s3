@@ -27,8 +27,12 @@ jobs:
         run: |
           echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+      - name: 🛠️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: 🏗️ Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ github.repository }}:${{ steps.tag.outputs.tag }},${{ github.repository }}:latest
