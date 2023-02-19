@@ -4,7 +4,17 @@ set -eu
 
 TIMESTAMP=$(date --iso-8601=seconds)
 
-echo "🏃‍♀️ Starting backup of ${S3_PREFIX} (${TIMESTAMP})"
+if [[ "${S3_PREFIX}" != */ ]]
+then
+    S3_PREFIX="${S3_PREFIX}/"
+fi
+
+if [[ "${S3_PREFIX}" = "/" ]]
+then
+    S3_PREFIX=""
+fi
+
+echo "🏃‍♀️ Starting backup for S3_PREFIX=\"${S3_PREFIX}\" (${TIMESTAMP})"
 echo
 
 echo "🪪 AWS caller identity:"
@@ -43,7 +53,7 @@ echo "🪣 Uploading to bucket"
 aws s3api put-object \
     --bucket="${BUCKET_NAME}" \
     --region="${BUCKET_REGION}" \
-    --key="${S3_PREFIX}/${TIMESTAMP}.pgdump.bz2.nc" \
+    --key="${S3_PREFIX}${TIMESTAMP}.pgdump.bz2.nc" \
     --acl=bucket-owner-full-control \
     --body="${BACKUP_FILE}" \
     --content-md5="${BACKUP_FILE_MD5_BASE64}"
