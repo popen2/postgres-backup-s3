@@ -32,11 +32,6 @@ pg_dump \
     --verbose
 
 echo
-echo "🗜️ Compressing backup"
-bzip2 -9 "${BACKUP_FILE}"
-BACKUP_FILE="${BACKUP_FILE}.bz2"
-
-echo
 echo "🔐 Running mcrypt"
 mcrypt "${BACKUP_FILE}" -k "${ENCRYPTION_KEY}"
 BACKUP_FILE="${BACKUP_FILE}.nc"
