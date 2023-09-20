@@ -40,15 +40,9 @@ echo
 echo "⚖️ How big is it?"
 du -sh "${BACKUP_FILE}"
 
-echo
-echo "🧮 Calculate hash"
-BACKUP_FILE_MD5_BASE64="$(openssl md5 -binary ${BACKUP_FILE} | base64)"
-
 echo "🪣 Uploading to bucket"
-aws s3api put-object \
-    --bucket="${BUCKET_NAME}" \
+aws s3 cp \
     --region="${BUCKET_REGION}" \
-    --key="${S3_PREFIX}${TIMESTAMP}.pgdump.bz2.nc" \
     --acl=bucket-owner-full-control \
-    --body="${BACKUP_FILE}" \
-    --content-md5="${BACKUP_FILE_MD5_BASE64}"
+    "${BACKUP_FILE}" \
+    "s3://${BUCKET_NAME}/${S3_PREFIX}${TIMESTAMP}.pgdump.nc"
